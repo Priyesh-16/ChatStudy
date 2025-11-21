@@ -73,55 +73,36 @@ Client-server chat applications are versatile tools that facilitate real-time co
 
 Client-server chat applications are foundational to real-time communication over networks. They incorporate principles of socket programming, communication protocols, and security mechanisms to provide a seamless user experience. Understanding the basics of client-server chat applications is essential for developers involved in networked application development, as they form the backbone of various collaborative communication systems. As technology evolves, chat applications continue to adapt, incorporating new features and technologies to enhance user interaction and connectivity.
 
-program:
-client
+## Program
+## Client
 ```
 import socket
-
-HOST = '127.0.0.1'  
-PORT = 12345       
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((HOST, PORT))
-print("Connected to server. Type 'exit' to quit.")
-
-while True:
-    message = input("Client: ")
-    client_socket.send(message.encode())
-    if message.lower() == 'exit':
-        break
-    data = client_socket.recv(1024).decode()
-    print(f"Server: {data}")
-
-client_socket.close()
+from datetime import datetime
+s=socket.socket()
+s.bind(('localhost',8000))
+s.listen(5)
+c,addr=s.accept()
+print("Client Address : ",addr)
+now = datetime.now()
+c.send(now.strftime("%d/%m/%Y %H:%M:%S").encode())
+ack=c.recv(1024).decode()
+if ack:
+    print(ack)
+    c.close()
 ```
-server
+## Server
 ```
-import socket
-
-HOST = '127.0.0.1'  
-PORT = 12345       
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind((HOST, PORT))
-server_socket.listen(1)
-print(f"Server listening on {HOST}:{PORT}")
-
-conn, addr = server_socket.accept()
-print(f"Connected by {addr}")
-
-while True:
-    data = conn.recv(1024).decode()
-    if not data or data.lower() == 'exit':
-        print("Client disconnected.")
-        break
-    print(f"Client: {data}")
-    message = input("Server: ")
-    conn.send(message.encode())
-
-conn.close()
-server_socket.close()
+ 
+import socket 
+s=socket.socket() 
+s.connect(('localhost',8000)) 
+print(s.getsockname()) 
+print(s.recv(1024).decode()) 
+s.send("acknowledgement recived from the server".encode())
 ```
-output
-<img width="1917" height="1112" alt="image" src="https://github.com/user-attachments/assets/43cb86fb-db89-44a9-b9a0-8f67fcd28533" />
+
+## Output
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/0a9bfb6d-fede-4ac4-ad4b-fe783a19a146" />
 
 
 ## Result:
